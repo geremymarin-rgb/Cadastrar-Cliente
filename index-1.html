@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Usuário</title>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .form-container {
+      background-color: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .form-container h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3ecf8e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #34b27b;
+    }
+    #mensagem {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Formulário de Cadastro</h2>
+    <form id="cadastroForm">
+      <div class="form-group">
+        <label for="nomeCompleto">Nome Completo</label>
+        <input type="text" id="nomeCompleto" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" placeholder="000.000.000-00" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="rgRnm">RG ou RNM</label>
+        <input type="text" id="rgRnm" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="endereco">Endereço</label>
+        <input type="text" id="endereco" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="telefone">Telefone</label>
+        <input type="tel" id="telefone" placeholder="(00) 00000-0000" required>
+      </div>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+    
+    <div id="mensagem"></div>
+  </div>
+
+  <script>
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://zafqokkmfksllipsslwo.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_cQtWZmHOliCX1WkVOFnDKQ_hZ8mUkUn';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('cadastroForm');
+    const mensagem = document.getElementById('mensagem');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      mensagem.innerText = 'Enviando...';
+      mensagem.style.color = '#333';
+
+      const dados = {
+        nome_completo: document.getElementById('nomeCompleto').value,
+        cpf: document.getElementById('cpf').value,
+        rg_rnm: document.getElementById('rgRnm').value,
+        endereco: document.getElementById('endereco').value,
+        telefone: document.getElementById('telefone').value
+      };
+
+      const { data, error } = await supabaseClient
+        .from('cadastros')
+        .insert([dados]);
+
+      if (error) {
+        mensagem.innerText = 'Erro ao realizar cadastro: ' + error.message;
+        mensagem.style.color = 'red';
+      } else {
+        mensagem.innerText = 'Cadastro realizado com sucesso!';
+        mensagem.style.color = 'green';
+        form.reset();
+      }
+    });
+  </script>
+
+</body>
+</html>
